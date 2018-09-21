@@ -34,7 +34,7 @@ class Game(object):
         
     #发牌
     def game_start(self, train):
-        
+
         #初始化players
         self.players = []
         self.players.append(Player(1, self.models[0], self.agent, self, self.RL))
@@ -58,7 +58,8 @@ class Game(object):
         next_move_types, next_moves = self.players[self.i].get_moves(self.last_move_type, self.last_move, self.playrecords)
         return next_move_types, next_moves
     
-    #游戏进行    
+    #游戏进行
+    #J 按1,2,3每个人出一次牌算一轮round,只记录last_move而不管是player2还是player3出的牌,都不要，则只记录last_move = "start"
     def get_next_move(self, action):
         while(self.i <= 2):
             if self.i != 0:
@@ -157,6 +158,7 @@ class PlayRecords(object):
         self.next_move3 = []
         
         #出牌记录
+        #[player id,[next_move]] 类似[1,[['3-a-1'],['3-b-1']],'dui',len=2]
         self.records = []
         
         #胜利者
@@ -469,7 +471,7 @@ class Player(object):
         #self.show("Player " + str(self.player_id))  
         #要不起&不要
         yaobuqi = False
-        if self.next_move_type in ["yaobuqi","buyao"]:
+        if self.next_move_type in ["yaobuqi", "buyao"]:
             yaobuqi = True
             self.next_move_type = last_move_type
             self.next_move = last_move

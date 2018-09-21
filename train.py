@@ -14,9 +14,9 @@ from game.config import Config
 if __name__=="__main__":
     
     step = 0
-    num_epochs = 10000001
+    num_epochs = 40001
     rl_model = "prioritized_dqn"
-    start_iter=5950000
+    start_iter=30000
     
     my_config = Config()
     learning_rate = 0.0001
@@ -36,7 +36,7 @@ if __name__=="__main__":
     loss = 0
     for episode in range(start_iter, num_epochs):
         # initial observation
-        s = agent.reset()
+        s = agent.reset() #返回当前player的手牌，目前写死是player1
         if episode%2000 == 0:
             print(agent.game.playrecords.show("==================="+str(episode)+"==================="))
         done = False
@@ -51,7 +51,7 @@ if __name__=="__main__":
                 agent.game.i = start
                 
             # RL choose action based on observation
-            actions = agent.get_actions_space()
+            actions = agent.get_actions_space() #返回可可能的出牌组合
             s = combine(s, actions)
             #action to one-hot
             actions_one_hot = np.zeros(agent.dim_actions)
@@ -105,7 +105,7 @@ if __name__=="__main__":
             
         if episode%2000 == 0:
             #保存模型
-            if episode%50000 == 0 and episode != start_iter:
+            if episode%10000 == 0 and episode != start_iter:
                 model ="Model_dqn/"+str(episode)+".ckpt"
                 RL.save_model(model)
                 print("save: ",episode)
@@ -121,4 +121,5 @@ if __name__=="__main__":
     # end of game
     print('game over')
     f.close()
+    RL.plot_cost()
     

@@ -36,7 +36,15 @@ def get_state(playrecords, player):
             continue
         for card in cards[1]:
             state[card.rank - 1 + 15] += 1  
-          
+
+        """J
+        # state = [33+431]
+        # 0-14是手牌包含的不同rank的牌的张数,即3-A,2,joker 15张牌的手牌张数,比如有2个3，1个4，3个5，0个6，4个7那就是[2,1,3,0,4...]
+        # 15-29是出牌记录，records里是[playerid,next_move]，取cards[1]就是丢弃了出牌人只存放了出牌信息[['3-a-1'],['3-b-1']],'dui',len=2]
+        # 过滤了["yaobuqi"]和["buyao"],只记录3-A,2,joker 15张牌的已出牌张数
+        # 30-32 是3个player的剩余手牌数开局便是[18,18,18],如果考虑地主1则应是[20，17，17]
+        # 最后是431种牌型组合,具体看actions.py
+        """
     return state    
 
 def get_actions(next_moves, actions_lookuptable, game):
@@ -51,6 +59,7 @@ def get_actions(next_moves, actions_lookuptable, game):
     430: yaobuqi
     429: buyao
     """
+    #J 现在能出的牌actions_lookuptable表
     actions = []
     for cards in next_moves:
         key = []

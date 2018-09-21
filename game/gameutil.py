@@ -95,6 +95,13 @@ def choose(next_move_types, next_moves, last_move_type, last_move, cards_left, m
        return choose_xgmodel(next_move_types, next_moves, RL, agent, game, player_id)    
     #训练model
     elif model == "rl":
+        '''
+        #J 传入要打的牌action_id，按给到的牌打，不用选择。这里传入的是之前在RL.choose_action选出的牌
+        # action = [self.next_move_types, self.next_moves, action_id, self.actions]，其中next_moves是具体牌，actions是牌型代号值
+        # action[3][action[2]] == self.actions[action_id]
+        # action[0][action[2]] == next_move_types[action_id]
+        # action[1][action[2]] == next_moves[action_id]
+        '''
         if action[3][action[2]] == 429:
             return "buyao", []
         elif action[3][action[2]] == 430:
