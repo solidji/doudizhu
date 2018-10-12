@@ -159,7 +159,7 @@ class DQNPrioritizedReplay:
             batch_size=32,
             e_greedy_increment=None,
             epsilon_init=0.5,
-            output_graph=False,
+            output_graph=True,
             prioritized=True,
             sess=None,
     ):
@@ -183,6 +183,13 @@ class DQNPrioritizedReplay:
 
         self.n_l1 = 512
         self.n_l2 = 512
+        self.n_l3 = 512
+        self.n_l4 = 512
+        self.n_l5 = 512
+        self.n_l6 = 512
+        self.n_l7 = 512
+        self.n_l8 = 512
+        self.n_l9 = 512
 
         self._build_net()
         
@@ -206,8 +213,10 @@ class DQNPrioritizedReplay:
         else:
             self.sess = sess
 
-        if output_graph:
-            tf.summary.FileWriter("logs/", self.sess.graph)
+        # if output_graph:
+        #     merged = tf.summary.merge_all()
+        #     self.train_writer = tf.summary.FileWriter("logs/", self.sess.graph)
+        #     # self.train_writer.close()
 
         self.cost_his = []
 
@@ -227,10 +236,42 @@ class DQNPrioritizedReplay:
                 #l2 = tf.maximum(0.2 * l2, l2)
                 
             with tf.variable_scope('l3'):
-                w3 = tf.get_variable('w3', [self.n_l2, self.n_actions], initializer=w_initializer, collections=c_names)
-                b3 = tf.get_variable('b3', [1, self.n_actions], initializer=b_initializer, collections=c_names)
-                out = tf.matmul(l2, w3) + b3
-            return out, b3
+                w3 = tf.get_variable('w3', [self.n_l2, self.n_l3], initializer=w_initializer, collections=c_names)
+                b3 = tf.get_variable('b3', [1, self.n_l3], initializer=b_initializer, collections=c_names)
+                l3 = tf.nn.relu(tf.matmul(l2, w3) + b3)
+
+            with tf.variable_scope('l4'):
+                w4 = tf.get_variable('w4', [self.n_l3, self.n_l4], initializer=w_initializer, collections=c_names)
+                b4 = tf.get_variable('b4', [1, self.n_l4], initializer=b_initializer, collections=c_names)
+                l4 = tf.nn.relu(tf.matmul(l3, w4) + b4)
+
+            # with tf.variable_scope('l5'):
+            #     w5 = tf.get_variable('w5', [self.n_l4, self.n_l5], initializer=w_initializer, collections=c_names)
+            #     b5 = tf.get_variable('b5', [1, self.n_l5], initializer=b_initializer, collections=c_names)
+            #     l5 = tf.nn.relu(tf.matmul(l4, w5) + b5)
+            #
+            # with tf.variable_scope('l6'):
+            #     w6 = tf.get_variable('w6', [self.n_l5, self.n_l6], initializer=w_initializer, collections=c_names)
+            #     b6 = tf.get_variable('b6', [1, self.n_l6], initializer=b_initializer, collections=c_names)
+            #     l6 = tf.nn.relu(tf.matmul(l5, w6) + b6)
+            #
+            # with tf.variable_scope('l7'):
+            #     w7 = tf.get_variable('w7', [self.n_l6, self.n_l7], initializer=w_initializer, collections=c_names)
+            #     b7 = tf.get_variable('b7', [1, self.n_l7], initializer=b_initializer, collections=c_names)
+            #     l7 = tf.nn.relu(tf.matmul(l6, w7) + b7)
+            #
+            # with tf.variable_scope('l8'):
+            #     w8 = tf.get_variable('w8', [self.n_l7, self.n_l8], initializer=w_initializer, collections=c_names)
+            #     b8 = tf.get_variable('b8', [1, self.n_l8], initializer=b_initializer, collections=c_names)
+            #     l8 = tf.nn.relu(tf.matmul(l7, w8) + b8)
+
+            with tf.variable_scope('l9'):
+                w9 = tf.get_variable('w9', [self.n_l4, self.n_actions], initializer=w_initializer, collections=c_names)
+                b9 = tf.get_variable('b9', [1, self.n_actions], initializer=b_initializer, collections=c_names)
+                out = tf.matmul(l4, w9) + b9
+            return out, b9
+
+
         
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
@@ -379,7 +420,30 @@ class DQNPrioritizedReplay:
 
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
         self.learn_step_counter += 1
+
+
+        # merged = tf.summary.merge_all()
+        self.variable_summaries(q_next)
+        self.variable_summaries(q_eval)
+        # train_writer = tf.summary.FileWriter("logs/", self.sess.graph)
+
+        # train_writer.close()
+
         return self.cost, self.learn_step_counter
+
+    #J 可视化TensorBoard
+    def variable_summaries(self, var):
+        """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
+        # with tf.name_scope('summaries'):
+        #     mean = tf.reduce_mean(var)
+        #     tf.summary.scalar('mean', mean)
+        #     with tf.name_scope('stddev'):
+        #         stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+        #     tf.summary.scalar('stddev', stddev)
+        #     tf.summary.scalar('max', tf.reduce_max(var))
+        #     tf.summary.scalar('min', tf.reduce_min(var))
+        #     tf.summary.histogram('histogram', var)
+        pass
 
     #新增
     def save_model(self, model):

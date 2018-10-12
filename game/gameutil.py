@@ -24,21 +24,39 @@ def game_init(players, playrecords, cards, train):
         p3_cards.sort(key=lambda x: x.rank)
         players[0].cards_left = playrecords.cards_left1 = p1_cards
         players[1].cards_left = playrecords.cards_left2 = p2_cards
-        players[2].cards_left = playrecords.cards_left3 = p3_cards  
+        players[2].cards_left = playrecords.cards_left3 = p3_cards
+
+        return 0
     else:
         #洗牌
         np.random.shuffle(cards.cards)
-        #排序
+        # 排序
         p1_cards = cards.cards[:20]
         p1_cards.sort(key=lambda x: x.rank)
         p2_cards = cards.cards[20:37]
         p2_cards.sort(key=lambda x: x.rank)
         p3_cards = cards.cards[37:]
         p3_cards.sort(key=lambda x: x.rank)
-        players[0].cards_left = playrecords.cards_left1 = p1_cards
-        players[1].cards_left = playrecords.cards_left2 = p2_cards
-        players[2].cards_left = playrecords.cards_left3 = p3_cards    
-    
+
+        # 随机地主,农民1,2，只需考虑player1的位置
+        #J 这里还需要进一步改进，以模拟好牌才抢地主,以及两人互抢地主reward加倍的情况
+        n = np.random.randint(0, 3)
+        if n == 0:
+            players[0].cards_left = playrecords.cards_left1 = p1_cards
+            players[1].cards_left = playrecords.cards_left2 = p2_cards
+            players[2].cards_left = playrecords.cards_left3 = p3_cards
+        elif n == 1:
+            players[0].cards_left = playrecords.cards_left1 = p3_cards
+            players[1].cards_left = playrecords.cards_left2 = p1_cards
+            players[2].cards_left = playrecords.cards_left3 = p2_cards
+
+        else:
+            players[0].cards_left = playrecords.cards_left1 = p2_cards
+            players[1].cards_left = playrecords.cards_left2 = p3_cards
+            players[2].cards_left = playrecords.cards_left3 = p1_cards
+
+        return n
+
     
     
 #展示扑克函数

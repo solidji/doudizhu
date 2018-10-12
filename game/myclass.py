@@ -22,7 +22,7 @@ class Game(object):
         self.end = False
         self.last_move_type = self.last_move = "start"
         self.playround = 1
-        self.i = 0
+        self.i = self.dizhu = 0
         self.yaobuqis = []
         
         #choose模型
@@ -42,10 +42,10 @@ class Game(object):
         self.players.append(Player(3, self.models[2], self.agent, self, self.RL))
         
         #初始化扑克牌记录类
-        self.playrecords = PlayRecords()    
+        self.playrecords = PlayRecords()
         
         #发牌
-        game_init(self.players, self.playrecords, self.cards, train)
+        self.i = self.dizhu = game_init(self.players, self.playrecords, self.cards, train)
     
     #返回扑克牌记录类
     def get_record(self):

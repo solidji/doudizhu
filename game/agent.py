@@ -28,9 +28,9 @@ class Agent(object):
         self.actions = []
         
         self.train = train
-        
+
         self.RL = RL
-        
+
     def reset(self):
         self.game = Game(self, self.RL)
         self.game.game_start(self.train)
@@ -117,8 +117,10 @@ class Agent(object):
             reward = reward * alpha
         elif winner == self.player:
             reward = 100
-        else:
+        elif winner == self.game.dizhu+1: #胜的是地主，而自己不是地主
             reward = -100
+        else:#胜的是另外一个农民
+            reward = 100
         #print(reward)
         return  new_state, reward, done
 
