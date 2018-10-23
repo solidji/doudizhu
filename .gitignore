@@ -3,3 +3,4 @@ Model*
 .idea/
 logs/
 *.ipynb
+log.txt
