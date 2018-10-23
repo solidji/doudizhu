@@ -116,7 +116,7 @@ class Agent(object):
                 reward = 0
             reward = reward * alpha
         elif winner == self.player:
-            reward = 100
+            reward = 1000
         elif winner == self.game.dizhu+1: #胜的是地主，而自己不是地主
             reward = -100
         else:#胜的是另外一个农民
