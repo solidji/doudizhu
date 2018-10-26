@@ -26,7 +26,9 @@ def game_init(players, playrecords, cards, train):
         players[1].cards_left = playrecords.cards_left2 = p2_cards
         players[2].cards_left = playrecords.cards_left3 = p3_cards
 
-        return 0
+        n = np.random.randint(0, 3)
+
+        return n
     else:
         #洗牌
         np.random.shuffle(cards.cards)

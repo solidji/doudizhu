@@ -19,17 +19,17 @@ if __name__=="__main__":
     #J episode:  200000 , epsilon:  0.99 , loss:  4.0304704 , win_rate:  [0.02617974 0.499525   0.47429526] [ 2618. 49953. 47430.] 0.5759842401575984 1
     #J episode:  400000 , epsilon:  0.99 , loss:  2.7135177 , win_rate:  [0.05687472 0.48627757 0.45684772] [11375. 97256. 91370.] 0.5940970295148524 2
     step = 0
-    num_epochs = 800001
+    num_epochs = 1100001
     rl_model = "prioritized_dqn"
-    start_iter = 700000
+    start_iter = 1000000
 
     
     my_config = Config()
-    learning_rate = 0.0001
-    e_greedy = 0.99
+    learning_rate = 0.001
+    e_greedy = 0.8
     
-    RL = model_init(my_config, rl_model, e_greedy=e_greedy, start_iter=start_iter, epsilon_init=0.85,  e_greedy_increment=0.00001)
-    agent = Agent(models=["rl","cxgz","cxgz"], my_config=my_config, RL=RL, train=False)
+    RL = model_init(my_config, rl_model, e_greedy=e_greedy, start_iter=start_iter, epsilon_init=0.8,  e_greedy_increment=0.00001)
+    agent = Agent(models=["rl","self","self"], my_config=my_config, RL=RL, train=False)
     
     losss = []
     winrates = []
@@ -62,7 +62,7 @@ if __name__=="__main__":
                 agent.game.i = agent.game.dizhu
                 
             # RL choose action based on observation
-            actions = agent.get_actions_space() #返回可可能的出牌组合
+            actions = agent.get_actions_space() #返回可能的出牌组合
             s = combine(s, actions)
             #action to one-hot
             actions_one_hot = np.zeros(agent.dim_actions)
@@ -105,7 +105,10 @@ if __name__=="__main__":
             winners[2] = winners[2] + 1
         winners[4] = winners[4] + 1
 
-        if agent.game.playrecords.winner == 1 or agent.game.playrecords.winner != agent.game.dizhu + 1:
+        if agent.game.playrecords.winner == 1:
+            winners[3] = winners[3] + 1
+        elif agent.game.playrecords.winner != agent.game.dizhu + 1 \
+                and agent.game.dizhu != 0:  # 胜的是另外一个农民
             winners[3] = winners[3] + 1
 
         # win1_rate = winner1/np.sum(winners)
